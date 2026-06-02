@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MainListViewController: UIViewController {
     
     let viewModel: MainListViewModelProtocol
     var listMovies: [MoviesModel] = []
@@ -18,6 +18,7 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
         let label = UILabel()
         label.text = "Movie List"
         label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.textColor = .white
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -43,17 +44,17 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
         super.init(nibName: nil, bundle: nil)
         self.viewModel.delegate = self
     }
-
+    
     // MARK: - Life Cicle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.loadData()
     }
-
+    
     override func loadView() {
         super .loadView()
-        view.backgroundColor = .brown
+        view.backgroundColor = .black
         
         view.addSubview(titleLabel)
         view.addSubview(tableView)
@@ -69,9 +70,10 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
-    // MARK: - TableView
     
+    // MARK: - TableView Delegate
+}
+extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listMovies.count
     }
@@ -87,6 +89,8 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
         titleLabel.text = listMovies[indexPath.row].title
     }
 }
+
+// MARK: - MainListViewModelDelegate
 
 extension MainListViewController: MainListViewModelDelegate {
     func displayData(value: [MoviesModel]) {

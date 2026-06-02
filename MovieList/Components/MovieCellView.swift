@@ -20,6 +20,7 @@ struct MovieCellView: View {
                 .foregroundStyle(.brown)
             Text(movieTitle)
                 .lineLimit(2)
+            Spacer()
             Image(systemName: "chevron.right")
                 .foregroundStyle(.brown)
         }

@@ -25,15 +25,6 @@ final class MainListViewModel: MainListViewModelProtocol {
 }
 
 extension MainListViewModel {
-    
-    /*
-     curl --request GET \
-          --url 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1' \
-          --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMWU5MjdkYmE4N2ZiZDljOTFmN2JmYjQ1ZmFmMDk3OCIsIm5iZiI6MTc4MDMzMTUwMC45ODU5OTk4LCJzdWIiOiI2YTFkYjNlYzg1ZjQ5YWRhMzBjYWI4OTciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.srDTDFaoYjrNOEpldHWJHFbbPvzKXEX2FM3b_P54FWA' \
-          --header 'accept: application/json'
-     */
-
-    
     func requestPopularMovies() {
         let url = URL(string: "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1")!
         
