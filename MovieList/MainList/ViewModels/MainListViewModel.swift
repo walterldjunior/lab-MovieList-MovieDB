@@ -11,11 +11,6 @@ protocol MainListViewModelDelegate: AnyObject {
     func displayData(value: [MoviesModel])
 }
 
-protocol MainListViewModelProtocol: AnyObject{
-    var delegate: MainListViewModelDelegate? { get set }
-    func loadData()
-}
-
 final class MainListViewModel: MainListViewModelProtocol {
     weak var delegate: MainListViewModelDelegate?
     
