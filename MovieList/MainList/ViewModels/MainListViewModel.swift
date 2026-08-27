@@ -7,24 +7,16 @@
 
 import Foundation
 
-protocol MainListViewModelDelegate: AnyObject {
-    func displayData(value: [MoviesModel])
+protocol MainListViewModelProtocol: AnyObject {
+    func loadData() async throws -> [MoviesModel]
 }
 
 final class MainListViewModel: MainListViewModelProtocol {
-    weak var delegate: MainListViewModelDelegate?
     
     // MARK: - Public methods
     
-    func loadData() {
-        Task {
-            do {
-                let movies: [MoviesModel] = try await requestPopularMovies()
-                self.delegate?.displayData(value: movies)
-            } catch {
-                // TODO: Tratar erro.
-            }
-        }
+    func loadData() async throws -> [MoviesModel] {
+        return try await requestPopularMovies()
     }
 }
 

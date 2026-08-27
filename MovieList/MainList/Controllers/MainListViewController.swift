@@ -42,14 +42,13 @@ class MainListViewController: UIViewController {
     init(viewModel: MainListViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        self.viewModel.delegate = self
     }
     
     // MARK: - Life Cicle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.loadData()
+        loadData()
     }
     
     override func loadView() {
@@ -71,6 +70,17 @@ class MainListViewController: UIViewController {
         ])
     }
     
+    func loadData() {
+        Task {
+            do {
+                self.listMovies = try await viewModel.loadData()
+                tableView.reloadData()
+            } catch {
+                // TODO: Criar alerta de erro
+            }
+        }
+    }
+    
     // MARK: - TableView Delegate
 }
 extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -87,14 +97,5 @@ extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         titleLabel.text = listMovies[indexPath.row].title
-    }
-}
-
-// MARK: - MainListViewModelDelegate
-
-extension MainListViewController: MainListViewModelDelegate {
-    func displayData(value: [MoviesModel]) {
-        listMovies = value
-        tableView.reloadData()
     }
 }
