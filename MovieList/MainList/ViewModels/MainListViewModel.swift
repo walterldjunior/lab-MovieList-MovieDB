@@ -14,35 +14,23 @@ protocol MainListViewModelDelegate: AnyObject {
 final class MainListViewModel: MainListViewModelProtocol {
     weak var delegate: MainListViewModelDelegate?
     
+    // MARK: - Public methods
+    
     func loadData() {
-        requestPopularMovies()
+        Task {
+            do {
+                let movies: [MoviesModel] = try await requestPopularMovies()
+                self.delegate?.displayData(value: movies)
+            } catch {
+                // TODO: Tratar erro.
+            }
+        }
     }
 }
 
 extension MainListViewModel {
-    func requestPopularMovies() {
-        let url = URL(string: "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1")!
-        
-        var request = URLRequest(url: url)
-        request.setValue("Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMWU5MjdkYmE4N2ZiZDljOTFmN2JmYjQ1ZmFmMDk3OCIsIm5iZiI6MTc4MDMzMTUwMC45ODU5OTk4LCJzdWIiOiI2YTFkYjNlYzg1ZjQ5YWRhMzBjYWI4OTciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.srDTDFaoYjrNOEpldHWJHFbbPvzKXEX2FM3b_P54FWA",
-                         forHTTPHeaderField: "Authorization")
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print("Error: \(error?.localizedDescription ?? "No data")")
-                return
-            }
-            
-            do {
-                let popularMoviesResponse = try JSONDecoder().decode(PopularMoviesResponse.self, from: data)
-                
-                DispatchQueue.main.async {
-                    self.delegate?.displayData(value: popularMoviesResponse.results)
-                }
-            } catch {
-                print("Erro ao decodificar")
-            }
-        }
-        task.resume()
+    func requestPopularMovies() async throws -> [MoviesModel] {
+        let response: PopularMoviesResponse = try await NetworkManager().request(.popular(page: 1))
+        return response.results
     }
 }
