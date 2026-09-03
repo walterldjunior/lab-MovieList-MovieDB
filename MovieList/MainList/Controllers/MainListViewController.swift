@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import SwiftUI
 
 class MainListViewController: UIViewController {
     
     let viewModel: MainListViewModelProtocol
-    var listMovies: [MoviesModel] = []
+    var listMovies: [MovieModel] = []
     
     // MARK: - Properties
     
@@ -53,22 +54,26 @@ class MainListViewController: UIViewController {
     
     override func loadView() {
         super .loadView()
-        view.backgroundColor = .black
+        view.backgroundColor = .brown
         
         view.addSubview(titleLabel)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        
+        setupSearchNavigationItem()
     }
+    
+    // MARK: - Methods
     
     func loadData() {
         Task {
@@ -81,8 +86,30 @@ class MainListViewController: UIViewController {
         }
     }
     
+    func setupSearchNavigationItem() {
+        let searchButton = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(actionSearch)
+        )
+        navigationItem.rightBarButtonItems = [searchButton]
+    }
+    
+    @objc func actionSearch() {
+        let viewController = UIHostingController(
+            rootView: MovieSearchView(
+                onSelect: { [weak self] movie in
+                    guard let self = self else { return }
+//                    self.navigateToDetailView(movie)
+                }
+            )
+        )
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     // MARK: - TableView Delegate
 }
+
 extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listMovies.count
@@ -90,7 +117,7 @@ extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCellView", for: indexPath) as! MovieUITableViewCell
-        cell.setup(movieTitle: listMovies[indexPath.row].title)
+        cell.setup(movie: listMovies[indexPath.row])
         
         return cell
     }

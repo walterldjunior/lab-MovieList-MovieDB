@@ -10,9 +10,9 @@ import SwiftUI
 
 class MovieUITableViewCell: UITableViewCell {
     
-    func setup(movieTitle: String) {
+    func setup(movie: MovieModel) {
         self.contentConfiguration = UIHostingConfiguration {
-            MovieCellView(movieTitle: movieTitle)
+            MovieCellView(movie: movie)
         }
     }
 }

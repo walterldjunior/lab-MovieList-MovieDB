@@ -8,20 +8,18 @@
 import Foundation
 
 protocol MainListViewModelProtocol: AnyObject {
-    func loadData() async throws -> [MoviesModel]
+    func loadData() async throws -> [MovieModel]
 }
 
 final class MainListViewModel: MainListViewModelProtocol {
     
     // MARK: - Public methods
     
-    func loadData() async throws -> [MoviesModel] {
+    func loadData() async throws -> [MovieModel] {
         return try await requestPopularMovies()
     }
-}
-
-extension MainListViewModel {
-    func requestPopularMovies() async throws -> [MoviesModel] {
+    
+    func requestPopularMovies() async throws -> [MovieModel] {
         let response: PopularMoviesResponse = try await NetworkManager().request(.popular(page: 1))
         return response.results
     }
