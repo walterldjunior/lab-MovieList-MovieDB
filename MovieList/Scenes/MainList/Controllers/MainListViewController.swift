@@ -17,7 +17,7 @@ class MainListViewController: UIViewController {
     
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Movie List"
+        label.text = "Lista de Filmes"
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.textColor = .white
         label.textAlignment = .center
@@ -100,15 +100,27 @@ class MainListViewController: UIViewController {
             rootView: MovieSearchView(
                 onSelect: { [weak self] movie in
                     guard let self = self else { return }
-//                    self.navigateToDetailView(movie)
+                    self.navigateToDetailView(movie)
                 }
             )
         )
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    // MARK: - TableView Delegate
+    func navigateToDetailView(_ movie: MovieModel) {
+        let viewModel = MovieDetailViewModel(movie: movie)
+        let viewController = UIHostingController(
+            rootView: MovieDetailView(viewModel: viewModel)
+            )
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func getMovie(from indexPath: IndexPath) -> MovieModel {
+        return listMovies[indexPath.row]
+    }
 }
+
+// MARK: - TableView Delegate
 
 extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -117,12 +129,14 @@ extension MainListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCellView", for: indexPath) as! MovieUITableViewCell
-        cell.setup(movie: listMovies[indexPath.row])
-        
+        let movie = getMovie(from: indexPath)
+        cell.setup(movie: movie)
+
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        titleLabel.text = listMovies[indexPath.row].title
+        let movie = getMovie(from: indexPath)
+        navigateToDetailView(movie)
     }
 }

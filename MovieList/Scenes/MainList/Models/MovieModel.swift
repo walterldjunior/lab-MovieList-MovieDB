@@ -11,11 +11,15 @@ struct MovieModel: Codable, Identifiable {
     let id: Int
     let title: String
     let posterPath: String?
+    let overview: String?
+    let voteAverage: Double?
     
     enum CodingKeys: String, CodingKey {
         case id
         case title
+        case overview
         case posterPath = "poster_path"
+        case voteAverage = "vote_average"
     }
     
     func getPosterURL() -> URL? {
